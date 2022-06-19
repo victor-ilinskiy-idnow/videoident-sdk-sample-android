@@ -1,1 +1,5 @@
-include ':app'
+import java.nio.file.Paths
+
+include ':app', ':sdk', ':eid'
+project(':sdk').projectDir = Paths.get("sdk").toFile()
+project(':eid').projectDir = Paths.get("sdk/eid").toFile()
