@@ -4,10 +4,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.facebook.soloader.DirectorySoSource;
+import com.facebook.soloader.SoLoader;
+import com.facebook.soloader.SoSource;
+
+import java.io.File;
 
 import de.idnow.R;
 import de.idnow.sdk.IDnowSDK;
@@ -24,6 +32,15 @@ public class MainActivity extends Activity {
 
         context = this;
 
+        final String dir = context.getApplicationInfo().nativeLibraryDir;
+        Log.d("dasdasdasdsaewqerrqrrqw", dir);
+        File myObj = new File(dir + "/test-file.txt");
+        try {
+            myObj.createNewFile();
+        } catch (Exception e) {
+            Log.e("dasdasdasdsaewqerrqrrqw", e.toString());
+        }
+
         Button startVideoIdentButton = findViewById(R.id.buttonStartVideoIdent);
         DrawableUtils.setProceedButtonBackgroundSelector(startVideoIdentButton);
         startVideoIdentButton.setOnClickListener(new OnClickListener() {
@@ -31,12 +48,31 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 try {
+                    Log.d("rrrr!", "ejfjdkfjdskfjsdlkjfsdlk;fjs;lkjf!");
+
+                    String myLibs = "/data/data/de.idnow/files/";
+
+                   /* SoLoader.init(context, SoLoader.SOLOADER_ALLOW_ASYNC_INIT);
+                    try {
+                        File soLibDIR = new File(myLibs);
+                        DirectorySoSource soSource = new DirectorySoSource(soLibDIR,
+                                SoSource.LOAD_FLAG_ALLOW_IMPLICIT_PROVISION);
+                        SoLoader.prependSoSource(soSource);
+                        SoLoader.loadLibrary("yuvfmJNI");
+                    } catch (UnsatisfiedLinkError e) {
+                        e.printStackTrace();
+                    }*/
+
+                    System.load(myLibs + "libyuvfmJNI.so");
+
+                    Log.d("rrrr!", "rrrr!");
+
                     IDnowSDK.getInstance().initialize(MainActivity.this, "");
                     IDnowSDK.setShowVideoOverviewCheck(true, context);
                     IDnowSDK.setShowErrorSuccessScreen(true, context);
 
                     // need to be changed to your own token as described in API documentation, see https://www.idnow.eu/development/api-documentation/
-                    IDnowSDK.setTransactionToken("TST-XXXXX", context);
+                    IDnowSDK.setTransactionToken("TST-JXXFN", context);
 
                     IDnowSDK.getInstance().start(IDnowSDK.getTransactionToken(context));
                 } catch (Exception e) {
@@ -58,7 +94,7 @@ public class MainActivity extends Activity {
                     IDnowSDK.setShowErrorSuccessScreen(true, context);
 
                     // need to be changed to your own token as described in API documentation, see https://www.idnow.eu/development/api-documentation/
-                    IDnowSDK.setTransactionToken("TST-XXXXX", context);
+                    IDnowSDK.setTransactionToken("TST-JXXFN", context);
 
                     IDnowSDK.getInstance().start(IDnowSDK.getTransactionToken(context));
                 } catch (Exception e) {
