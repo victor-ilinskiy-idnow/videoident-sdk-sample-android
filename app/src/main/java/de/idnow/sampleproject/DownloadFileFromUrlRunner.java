@@ -1,6 +1,5 @@
 package de.idnow.sampleproject;
 
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -17,12 +16,17 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 class DownloadFileFromUrlRunner {
-    class Input {
+    static class Input {
+        Input(String url, String outPath) {
+            this.url = url;
+            this.outPath = outPath;
+        }
+
         String url;
         String outPath;
     }
 
-    class Task implements Callable<String> {
+    static class Task implements Callable<String> {
         private final Input input;
 
         public Task(Input input) {
@@ -36,8 +40,8 @@ class DownloadFileFromUrlRunner {
                 URL url = new URL(input.url);
                 URLConnection conection = url.openConnection();
                 conection.connect();
-                // getting file length
-                int lenghtOfFile = conection.getContentLength();
+
+                Log.d("dsadasaere",  url.toString());
 
                 // input stream to read file - with 8k buffer
                 InputStream inputStream = new BufferedInputStream(url.openStream(), 8192);
@@ -74,12 +78,12 @@ class DownloadFileFromUrlRunner {
     private final Executor executor = Executors.newSingleThreadExecutor(); // change according to your requirements
     private final Handler handler = new Handler(Looper.getMainLooper());
 
-    public interface Callback<String> {
+    public interface Callback {
         void onComplete(String result);
         void onFail(Exception e);
     }
 
-    public void executeAsync(Callable<String> callable, Callback<String> callback) {
+    public void executeAsync(Callable<String> callable, Callback callback) {
         executor.execute(() -> {
             try {
                 final String result = callable.call();

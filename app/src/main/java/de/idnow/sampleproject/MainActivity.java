@@ -11,18 +11,13 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.facebook.soloader.DirectorySoSource;
-import com.facebook.soloader.SoLoader;
-import com.facebook.soloader.SoSource;
-
-import java.io.File;
-
 import de.idnow.R;
 import de.idnow.sdk.IDnowSDK;
 
 public class MainActivity extends Activity {
 
     private Context context;
+    private IdNowRemoteDepManager depManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,39 +26,17 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         context = this;
-
-        final String dir = context.getApplicationInfo().nativeLibraryDir;
-        Log.d("dasdasdasdsaewqerrqrrqw", dir);
-        File myObj = new File(dir + "/test-file.txt");
-        try {
-            myObj.createNewFile();
-        } catch (Exception e) {
-            Log.e("dasdasdasdsaewqerrqrrqw", e.toString());
-        }
+        depManager = new IdNowRemoteDepManager();
 
         Button startVideoIdentButton = findViewById(R.id.buttonStartVideoIdent);
         DrawableUtils.setProceedButtonBackgroundSelector(startVideoIdentButton);
+
         startVideoIdentButton.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 try {
                     Log.d("rrrr!", "ejfjdkfjdskfjsdlkjfsdlk;fjs;lkjf!");
-
-                    String myLibs = "/data/data/de.idnow/files/";
-
-                   /* SoLoader.init(context, SoLoader.SOLOADER_ALLOW_ASYNC_INIT);
-                    try {
-                        File soLibDIR = new File(myLibs);
-                        DirectorySoSource soSource = new DirectorySoSource(soLibDIR,
-                                SoSource.LOAD_FLAG_ALLOW_IMPLICIT_PROVISION);
-                        SoLoader.prependSoSource(soSource);
-                        SoLoader.loadLibrary("yuvfmJNI");
-                    } catch (UnsatisfiedLinkError e) {
-                        e.printStackTrace();
-                    }*/
-
-                    System.load(myLibs + "libyuvfmJNI.so");
 
                     Log.d("rrrr!", "rrrr!");
 
@@ -103,6 +76,23 @@ public class MainActivity extends Activity {
                 }
             }
         });
+
+        startVideoIdentButton.setEnabled(false);
+        startPhotoIdentButton.setEnabled(false);
+        depManager.loadDependency(IdNowRemoteDepManager.DependencyType.ICE_LINK, context,
+                new IdNowRemoteDepManager.Callback() {
+                    @Override
+                    public void onComplete() {
+                        Log.d("DepMan", "Loaded!");
+                        startVideoIdentButton.setEnabled(true);
+                        startPhotoIdentButton.setEnabled(true);
+                    }
+
+                    @Override
+                    public void onFail(Exception e) {
+                        Log.e("DepMan", e.toString());
+                    }
+                });
     }
 
     /**

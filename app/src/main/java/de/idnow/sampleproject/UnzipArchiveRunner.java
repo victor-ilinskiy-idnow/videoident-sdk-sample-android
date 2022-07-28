@@ -21,12 +21,17 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 class UnzipArchiveRunner {
-    class Input {
+    static class Input {
+        Input(String zipFilePath, String outPath) {
+            this.zipFilePath = zipFilePath;
+            this.outPath = outPath;
+        }
+
         String zipFilePath;
         String outPath;
     }
 
-    class Task implements Callable<String> {
+    static class Task implements Callable<String> {
         private final Input input;
 
         public Task(Input input) {
@@ -76,12 +81,12 @@ class UnzipArchiveRunner {
     private final Executor executor = Executors.newSingleThreadExecutor(); // change according to your requirements
     private final Handler handler = new Handler(Looper.getMainLooper());
 
-    public interface Callback<String> {
+    public interface Callback {
         void onComplete(String result);
         void onFail(Exception e);
     }
 
-    public void executeAsync(Callable<String> callable, Callback<String> callback) {
+    public void executeAsync(Callable<String> callable, Callback callback) {
         executor.execute(() -> {
             try {
                 final String result = callable.call();
