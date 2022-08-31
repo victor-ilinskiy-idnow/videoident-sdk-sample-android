@@ -20,7 +20,11 @@ repositories {
 
 android {
     signingConfigs {
-        config {
+        release {
+            storeFile file("viapp.keystore")
+            storePassword "111111"
+            keyAlias "viapp"
+            keyPassword "111111"
         }
     }
     compileSdkVersion 31
