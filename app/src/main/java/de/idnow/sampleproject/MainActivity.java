@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
                     IDnowSDK.setShowErrorSuccessScreen(true, context);
 
                     // need to be changed to your own token as described in API documentation, see https://www.idnow.eu/development/api-documentation/
-                    IDnowSDK.setTransactionToken("TST-EELSC", context);
+                    IDnowSDK.setTransactionToken("TST-DMXGS", context);
 
                     IDnowSDK.getInstance().start(IDnowSDK.getTransactionToken(context));
                 } catch (Exception e) {
